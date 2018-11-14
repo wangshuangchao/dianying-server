@@ -19,7 +19,6 @@ import com.mugua.dianying.common.utils.ObjectId;
 import com.mugua.dianying.entity.Board;
 import com.mugua.dianying.entity.ExtendType;
 import com.mugua.dianying.entity.ExtendTypeVal;
-import com.mugua.dianying.entity.Sysoperator;
 import com.mugua.dianying.entity.ValScope;
 import com.mugua.dianying.entity.VideoInfo;
 import com.mugua.dianying.entity.VideoInfoBoard;

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author xiaobai123
- * @since 2018-11-06
+ * @since 2018-11-14
  */
 @Service
 public class ExtendTypeServiceImpl extends ServiceImpl<ExtendTypeMapper, ExtendType> implements ExtendTypeService {

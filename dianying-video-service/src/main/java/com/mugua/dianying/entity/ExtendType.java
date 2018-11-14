@@ -18,7 +18,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author xiaobai123
- * @since 2018-11-06
+ * @since 2018-11-14
  */
 @Data
 @Accessors(chain = true)
@@ -33,9 +33,9 @@ public class ExtendType implements Serializable {
     /**
      * 0,单选 1,多选 2,数值 3,字符串
      */
-    @TableField("extend_type")
+    @TableField("type_val")
     private Integer extendType;
-    @TableField("extend_default")
+    @TableField("default_val")
     private String extendDefault;
     @TableField("create_time")
     private Date createTime;

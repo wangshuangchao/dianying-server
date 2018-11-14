@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author xiaobai123
- * @since 2018-11-08
+ * @since 2018-11-14
  */
 @Service
 public class BoardExtendTypeServiceImpl extends ServiceImpl<BoardExtendTypeMapper, BoardExtendType> implements BoardExtendTypeService {

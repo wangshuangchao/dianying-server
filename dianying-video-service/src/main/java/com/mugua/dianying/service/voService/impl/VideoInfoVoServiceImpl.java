@@ -57,6 +57,7 @@ public class VideoInfoVoServiceImpl implements VideoInfoVoService {
 		// 添加视频基本信息
 		boolean flagVideoInfo = videoInfoService.insert(videoInfoEntity);
 		// 添加视频信息和版块信息关联信息
+		System.out.println("videoInfoBoar: " );
 		videoInfoBoard.setSysId(ObjectId.getObjectId());
 		videoInfoBoard.setVideoInfo(sysIdVideoInfo);
 		boolean flagVideoInfoBoard = videoInfoBoardService.insert(videoInfoBoard);

@@ -49,6 +49,7 @@ public class ValScopeController {
 	@PostMapping("/valScope")
 	public RespBean add(@RequestBody ValScopePojo valScopePojo){
 		RespBean result = new RespBean();
+		
 		String extendTypeId = valScopePojo.getExtendTypeSysId();
 		// 如果没有传递扩展属性id或者扩展属性不存在,不允许添加扩展属性可选值
 		if (extendTypeId != null) {
@@ -66,6 +67,13 @@ public class ValScopeController {
 		
 		// 哪个扩展属性的值
 		ValScope valScope = valScopePojo.getValScope();
+		String extendVal = valScope.getExtendVal();
+		// 如果扩展属性值为"",则不允许添加扩展属性可选值
+		if ("".equals(extendVal)) {
+			result.setStatus(500);
+			result.setMsg("FAULT");
+			return result;
+		}
 		valScope.setExtendType(extendTypeId);
 		valScope.setSysId(ObjectId.getObjectId());
 		// 当前登录的操作员
@@ -94,14 +102,18 @@ public class ValScopeController {
 	public RespBean delete(@PathVariable(name = "sysId") String id){
 		RespBean result = new RespBean();
 		ValScope valScope = valScopeService.selectById(id);
-		if (valScope == null) {
+		
+		// 如果不存在或已被软删除,不允许删除
+		if (valScope == null || valScope.getIsDelete() == 1) {
 			result.setStatus(500);
 			result.setMsg("FAULT");
 			return result;
 		}
+		
 		// 登录的操作员
 		valScope.setModifyMan("王五");
 		valScope.setModifyTime(new Date());
+		
 		// 软删除,更改字段is_delete的值,0:未删除(默认值),1:删除
 		valScope.setIsDelete(CommonConstant.DELETE);
 		EntityWrapper wrapper = new EntityWrapper();
@@ -124,6 +136,23 @@ public class ValScopeController {
 	@PutMapping("/valScope")
 	public RespBean modify(@RequestBody ValScope valScope){
 		RespBean result = new RespBean();
+		
+		// 扩展属性值不能为""
+		String extendVal = valScope.getExtendVal();
+		if ("".equals(extendVal)) {
+			result.setStatus(500);
+			result.setMsg("FAULT");
+			return result;
+		}
+		String sysId = valScope.getSysId();
+		
+		// 如果修改的记录不存在,则修改失败
+		if (valScopeService.selectById(sysId) == null) {
+			result.setStatus(500);
+			result.setMsg("FAULT");
+			return result;
+		}
+		
 		// 登录的操作员
 		valScope.setModifyMan("赵六");
 		valScope.setModifyTime(new Date());
@@ -147,12 +176,13 @@ public class ValScopeController {
 	public RespBean queryOneById(@PathVariable(name="sysId") String id){
 		RespBean result = new RespBean();
 		ValScope valScope =valScopeService.selectById(id);
-		if (valScope.getIsDelete() == 1) {
-			result.setStatus(500);
-			result.setMsg("FAULT");
-			return result;
-		}
+		
 		if (valScope != null) {
+			if (valScope.getIsDelete() == 1) {
+				result.setStatus(500);
+				result.setMsg("FAULT");
+				return result;
+			}
 			result.setStatus(200);
 			result.setMsg("SUCCESS");
 			result.setObj(valScope);
@@ -165,41 +195,40 @@ public class ValScopeController {
 	}
 
 	/**
-	 * 分页查询或者按扩展属性查询
+	 * 分页查询(支持按扩展属性筛选)
 	 * @param current 当前页
 	 * @param size 每页多少条数据
-	 * @param ascs
-	 * @param descs
 	 * @param extendType 扩展属性id
 	 * @return
 	 */
 	@GetMapping("/valScope")
-	public RespBean queryOnePage(String current,  String size, String ascs, String descs, String extendType){
-		//返回结果
+	public RespBean queryOnePage(String current,  String size, String extendType){
 		RespBean result = new RespBean();
+
 		// 分页查询
-		if (extendType == null && !"0".equals(current) && !"0".equals(size)) {
+		if ((!"0".equals(current)) && (!"0".equals(size))) {
 			Page<ValScope> page = new Page<ValScope>();
 			page.setCurrent(Integer.parseInt(current));
 			page.setSize(Integer.parseInt(size));
 			EntityWrapper<ValScope> wrapper = new EntityWrapper<ValScope>();
+			
+			// 如果接收了扩展属性,则根据扩展属性进行筛选
+			if (extendType != null) {
+				
+				// 扩展属性不存在,则查询失败
+				if (extendTypeService.selectById(extendType) != null){
+					wrapper.eq("extend_type", extendType);
+				}else {
+					result.setStatus(500);
+					result.setMsg("FAULT");
+					return result;
+				}
+			}
 			Page<ValScope> resultPage = valScopeService.selectPage(page, wrapper.eq("is_delete", 0));
 			List<ValScope> data = resultPage.getRecords();
+			
 			//表中总的数据条数
 			int total = resultPage.getTotal();
-			if (data != null) {
-				result.setStatus(200);
-				result.setMsg("SUCCESS");
-				result.setObj(data);
-			}else {
-				result.setStatus(500);
-				result.setMsg("FAULT");
-			}
-		}
-		// 根据扩展属性查询
-		if (extendType != null) {
-			EntityWrapper<ValScope> wrapper = new EntityWrapper<ValScope>();
-			List<ValScope> data = valScopeService.selectList(wrapper.eq("extend_type", extendType).eq("is_delete", 0));
 			if (data != null) {
 				result.setStatus(200);
 				result.setMsg("SUCCESS");

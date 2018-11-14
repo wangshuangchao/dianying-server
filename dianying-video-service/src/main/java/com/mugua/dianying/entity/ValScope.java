@@ -18,7 +18,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author xiaobai123
- * @since 2018-11-06
+ * @since 2018-11-14
  */
 @Data
 @Accessors(chain = true)
@@ -42,7 +42,7 @@ public class ValScope implements Serializable {
     @TableField("modify_man")
     private String modifyMan;
     @TableField("is_delete")
-    private int  isDelete;
+    private int isDelete;
 
 
 }

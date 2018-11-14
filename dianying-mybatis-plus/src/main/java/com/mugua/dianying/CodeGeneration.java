@@ -81,28 +81,11 @@ public class CodeGeneration {
 		strategy.setNaming(NamingStrategy.underline_to_camel);// 表名生成策略
 		strategy.setInclude(new String[] { "board",
 				"board_extend_type",
-				"board_log",
-				"client_user",
 				"extend_type",
-				"extend_type_log",
 				"extend_type_val",
-				" jurisdiction",
-				"role",
-				"role_jurisdiction",
-				"role_log",
-				"slice",
-				"slice_log",
-				"sysoperator",
-				"sysoperator_log",
-				"sysoperators_role",
-				"user_log",
 				"val_scope",
-				"val_scope_log",
-				"video_file",
-				"video_file_log",
 				"video_info",
-				"video_info_board",
-				"video_info_log"}); // 需要生成的表
+				"video_info_board"}); // 需要生成的表
 		// strategy.setExclude(new String[]{"test"});// 排除生成的表
 		strategy.setEntityLombokModel(true);// lombok类型的bean
 		strategy.setSuperServiceClass(null);
